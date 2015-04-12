@@ -22,7 +22,7 @@ var twoSum = function(numbers, target) {
             continue;
         }
         if (value.length === 1) {
-            if (value[0] == i) {
+            if (value[0] === i) {
                 continue ;
             }
             return [i + 1, value[0] + 1];
