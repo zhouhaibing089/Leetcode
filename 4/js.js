@@ -4,7 +4,7 @@ var findMedianSortedArrays = function(A, B) {
         var m = A.length / 2;
         return A.length % 2 === 0 ? (A[m] + A[m - 1]) / 2 : A[Math.floor(m)];
     }
-
+    
     var search = function(array, target, start, dest) {
         if ((dest - start) === 1) {
             return array[start] < target ? start : start - 1;
