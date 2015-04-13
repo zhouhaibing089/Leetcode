@@ -1,6 +1,6 @@
-### Median of Two Sorted Arrays
+### 找两个有序数组的中位数
 
-There are two sorted arrays `A` and `B` of size `m` and `n` respectively. Find the median of the two sorted arrays. The overall run time complexity should be `O(log (m+n))`.
+现有两个有序数组`A`和`B`, 数组长度分别为`m`和`n`. 如何找到他们的中位数? 注意, 总的时间复杂度应该是`O(log (m+n))`.。
 
 ### 思路
 
