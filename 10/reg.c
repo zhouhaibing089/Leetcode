@@ -4,7 +4,7 @@
 bool is_match(char *s, char *p);
 
 int main() {
-    printf ("%d\n", is_match("ab", ".*.."));
+    printf ("%d\n", is_match("a", ".*..a*"));
     return 0;
 }
 
@@ -13,66 +13,39 @@ int main() {
  * `*`: zero or more of the preceding character
  */
 bool is_match(char *s, char *p) {
-    /* source pointer */
-    int sp = 0;
-    /* pattern pointer */
-    int pp = 0;
-    /* traverse the source */
-    while (s[sp++] != 0) {
-        printf("sp = %d, pp = %d\n", sp - 1, pp);
-        char sc = s[sp - 1];
-        char pc = p[pp];
-        /* partial match */
-        if (pc == 0) {
-            printf("partial match\n");
-            return false;
-        }
-        // the same or the dot match
-        if (sc == pc || pc == '.') {
-            printf("same or dot match\n");
-            ++pp;
-            continue;
-        }
-        // the star match: a = a*
-        if (pp > 0 && pc == '*' && (p[pp - 1] == sc || p[pp - 1] == '.')) {
-            printf("star match\n");
-            continue;
-        }
-        // end of star match: a = *a
-        if (p[pp + 1] != 0 && pc == '*' && (p[pp + 1] == sc || p[pp + 1] == '.')) {
-            printf("end of star match\n");
-            pp += 2;
-            continue;
-        }
-        // ignore star
-        if (p[pp + 1] != 0 && p[pp + 1] == '*') {
-            printf("star get ingored\n");
-            pp += 2;
-            // reset the source pointer
-            sp -= 1;
-            continue;
-        }
-        printf("not match\n");
-        return false;
-    }
-    printf("out of the loop, sp= %d, pp = %d\n", sp, pp);
-    if (p[pp] == 0) {
+    bool match = false;
+    // base case #1: both reach to the end
+    if (s[0] == 0 && p[0] == 0) {
+        printf("base case #1 reached\n");
         return true;
     }
-    int sign = 0;
-    if (p[pp] == '*') {
-        sign = 1;
-        ++pp;
+    // base case #2: 'a' == 'a' || 'a' == '.'
+    if (s[0] == p[0] || (s[0] != 0 && p[0] == '.')) {
+        printf("24: recursive to: s=%s, p=%s\n", s + 1, p + 1);
+        match = is_match(s + 1, p + 1);
     }
-    char last = s[sp - 2];
-    while (p[pp] != 0 && p[pp + 1] != 0) {
-        if (p[pp + 1] != '*') {
-            printf("not star: pp = %d\n", pp + 1);
-            return false;
+    if (match) {
+        printf("base case #2 reached\n");
+        return true;
+    }
+    // base case #3: 'a' == 'a*'
+    if (p[0] != 0 && p[1] != 0 && p[1] == '*') {
+        // as zero times
+        printf("34: recursive to: s=%s, p=%s\n", s, p + 2);
+        match = is_match(s, p + 2);
+        if (match) {
+            printf("base case #3 as zero time reached\n");
+            return true;
         }
-        pp += 2;
+        // as one or more times
+        if (s[0] == p[0] || (p[0] == '.' && s[0] != 0)) {
+            printf("42: recursive to: s=%s, p=%s\n", s + 1, p);
+            match = is_match(s + 1, p);
+            if (match) {
+                printf("base case #3 as one or more times reached\n");
+                return match;
+            }
+        }
     }
-    printf("last pp = %d, sp = %d, sign= %d\n", pp, sp - 2, sign);
-    return p[pp] == 0 || (p[pp] == last && sign == 1);
-    // return p[pp] == 0 || (p[pp] == '*' && p[pp + 1] == 0) || (p[pp] == '*' && p[pp + 1] == p[pp - 1] && p[pp + 2] == 0);
+    return false;
 }
