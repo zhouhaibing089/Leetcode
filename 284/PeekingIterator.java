@@ -1,6 +1,6 @@
 class PeekingIterator implements Iterator<Integer> {
 
-	Iterator<Integer> mIterator;
+    Iterator<Integer> mIterator;
 
     Integer mPeeked = null;
 
