@@ -96,10 +96,14 @@ char* create_string(char sign, char c, char* cat) {
     return str;
 }
 
+bool safe(int i, int j) {
+    return (INT_MAX - i * 10) >= j;
+}
+
 /*
  * with one more argument
  */
-char** addOperators2(int head, char* num, int target, int* returnSize, bool reverse) {
+char** addOperators2(int head, char* num, int target, int* returnSize, bool reverse, int lhs, int rhs) {
     // printf("head=%d [%s] = %d\n", head, num, target);
     int size = 0;
     int count = 0;
@@ -113,15 +117,22 @@ char** addOperators2(int head, char* num, int target, int* returnSize, bool reve
             printf("Yes: head=%d + [%s] = %d\n", head, num, target);
             ++count;
             append(l, create_string(reverse ? '-' : '+', num[0], NULL));
-        } else if ((head - digit) == target) {
+        }
+        if ((head - digit) == target) {
             printf("Yes: head=%d - [%s] = %d\n", head, num, target);
             ++count;
             append(l, create_string(reverse ? '+' : '-', num[0], NULL));
-        } else if ((head * digit) == target) {
+        }
+        if ((head * digit) == target) {
             printf("Yes: head=%d * [%s] = %d\n", head, num, target);
             ++count;
             append(l, create_string('*', num[0], NULL));
-        } else if((head * 10 + digit) == target) {
+        }
+        if((lhs == -1 && rhs == -1) && head != 0 && (safe(head, digit)) && head != 0 && (head * 10 + digit) == target) {
+            printf("Yes: head=%d[%s] = %d\n", head, num, target);
+            ++count;
+            append(l, create_string(0, num[0], NULL));
+        } else if ((lhs != -1 && rhs != -1 && rhs != 0) && (lhs * (rhs * 10 + digit) == target)) {
             printf("Yes: head=%d[%s] = %d\n", head, num, target);
             ++count;
             append(l, create_string(0, num[0], NULL));
@@ -131,7 +142,7 @@ char** addOperators2(int head, char* num, int target, int* returnSize, bool reve
     }
     // #1: head + [(num target) - head]
     // printf("Try: head=%d + [%s] = %d\n", head, num, target);
-    result = addOperators2(num[0] - '0', num + 1, target - head, &size, reverse);
+    result = addOperators2(num[0] - '0', num + 1, target - head, &size, reverse, -1, -1);
     count += size;
     if (size > 0) {
         for (int i = 0; i < size; ++i) {
@@ -142,7 +153,7 @@ char** addOperators2(int head, char* num, int target, int* returnSize, bool reve
     }
     // #2: head - [head - (num target)]
     // printf("Try: head=%d - [%s] = %d\n", head, num, target);
-    result = addOperators2(num[0] - '0', num + 1, head - target, &size, !reverse);
+    result = addOperators2(num[0] - '0', num + 1, head - target, &size, !reverse, -1, -1);
     count += size;
     if (size > 0) {
         for (int i = 0; i < size; ++i) {
@@ -153,7 +164,7 @@ char** addOperators2(int head, char* num, int target, int* returnSize, bool reve
     }
     // #3: head => head * num[0], num => num + 1
     // printf("Try: head=%d * [%s] = %d\n", head, num, target);
-    result = addOperators2(head * (num[0] - '0'), num + 1, target, &size, reverse);
+    result = addOperators2(head * (num[0] - '0'), num + 1, target, &size, reverse, head, num[0] - '0');
     count += size;
     if (size > 0) {
         for (int i = 0; i < size; ++i) {
@@ -164,14 +175,29 @@ char** addOperators2(int head, char* num, int target, int* returnSize, bool reve
     }
     // #4: head => head * 10 + num[0], num => num + 1
     // printf("Try: head=%d[%s] = %d\n", head, num, target);
-    result = addOperators2(head * 10 + (num[0] - '0'), num + 1, target, &size, reverse);
-    count += size;
-    if (size > 0) {
-        for (int i = 0; i < size; ++i) {
-            append(l, create_string(0, num[0], result[i]));
-            free(result[i]);
+    if (lhs == -1 && rhs == -1 && head != 0) {
+        result = addOperators2(head * 10 + (num[0] - '0'), num + 1, target, &size, reverse, -1, -1);
+        count += size;
+        if (size > 0) {
+            for (int i = 0; i < size; ++i) {
+                append(l, create_string(0, num[0], result[i]));
+                free(result[i]);
+            }
+            free(result);
         }
-        free(result);
+    } else if (rhs != 0 && lhs != -1) {
+        rhs = rhs * 10 + num[0] - '0';
+        result = addOperators2(lhs * rhs, num + 1, target, &size, reverse, lhs, rhs);
+        count += size;
+        if (size > 0) {
+            for (int i = 0; i < size; ++i) {
+                append(l, create_string(0, num[0], result[i]));
+                free(result[i]);
+            }
+            free(result);
+        }
+    } else {
+        // lhs != -1 && rhs == 0
     }
 
     // #5: retrieve result
@@ -196,7 +222,7 @@ char** addOperators(char* num, int target, int* returnSize) {
             return NULL;
         }
     }
-    char** result = addOperators2(num[0] - '0', num + 1, target, returnSize, false);
+    char** result = addOperators2(num[0] - '0', num + 1, target, returnSize, false, -1, -1);
     int size = *returnSize;
     if (size == 0) {
         return NULL;
@@ -212,28 +238,29 @@ char** addOperators(char* num, int target, int* returnSize) {
 
 int main() {
     char* s = (char*)malloc(11 * sizeof(char));
-    // s[0] = '1';
-    // s[1] = '2';
-    // s[2] = '3';
-    // s[3] = '4';
-    // s[4] = '5';
-    // s[5] = '6';
-    // s[6] = '7';
-    // s[7] = '8';
-    // s[8] = '9';
-    // s[9] = 0;
-    s[0] = '3';
-    s[1] = '4';
-    s[2] = '5';
-    s[3] = '6';
-    s[4] = '2';
-    s[5] = '3';
-    s[6] = '7';
-    s[7] = '4';
-    s[8] = '9';
-    s[9] = '0';
+    s[0] = '2';
+    s[1] = '1';
+    s[2] = '4';
+    s[3] = '7';
+    s[4] = '4';
+    s[5] = '8';
+    s[6] = '3';
+    s[7] = '6';
+    s[8] = '4';
+    s[9] = '8';
     s[10] = 0;
-    int target = 9191;
+    // s[0] = '3';
+    // s[1] = '4';
+    // s[2] = '5';
+    // s[3] = '6';
+    // s[4] = '2';
+    // s[5] = '3';
+    // s[6] = '7';
+    // s[7] = '4';
+    // s[8] = '9';
+    // s[9] = '0';
+    // s[10] = 0;
+    int target = -2147483648;
     int size;
     char** result = addOperators(s, target, &size);
     for (int i = 0; i < size; ++i) {
