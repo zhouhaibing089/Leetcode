@@ -9,7 +9,8 @@ int numSquares(int n) {
     for (int i = 1; i <= n; ++i) {
         int sq = floor(sqrt(i));
         if ((sq * sq) == i) {
-            store[i] = 1;
+            store[i] = i;
+            continue;
         }
         store[i] = INT_MAX;
         // calculate the value
