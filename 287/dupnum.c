@@ -3,20 +3,16 @@
 
 int findDuplicate(int *nums, int numsSize) {
   int size = sizeof(int) * 8;
-  int bits[size];
-  int bits2[size];
-  for (int i = 0; i < size; ++i) {
-    bits[i] = 0;
-    bits2[i] = 0;
-  }
+  int bits[sizeof(int) * 8] = {0};
+  int bits2[sizeof(int) * 8] = {0};
   for (int i = 1; i <= (numsSize - 1); ++i) {
     int n = i;
     int j = 0;
     while (n != 0) {
       if (n % 2 == 1) {
-        bits[j] = bits[j] + 1;
+        ++bits[j];
       }
-      n = n / 2;
+      n = n >> 1;
       ++j;
     }
   }
