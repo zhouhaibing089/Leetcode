@@ -55,22 +55,6 @@ IntArray int_array_rm(IntArray* array_ptr, int length, int index) {
   return array;
 }
 
-/* print the array */
-void int_array_print(IntArray* array_ptr, int length) {
-  for (int i = 0; i < length; ++i) {
-    printf("%d ", array_ptr->array[i]);
-  }
-  printf("\n");
-}
-
-void char_array_print(IntArray* array_ptr, int length) {
-  for (int i = 0; i < length; ++i) {
-    printf("%c ", array_ptr->array[i]);
-  }
-  printf("\n");
-}
-
-
 /* normalize the string into a list of operands and operators */
 void normalize(char* s, IntArray* operands, IntArray* operators, int* size) {
   int n = 0;      // current number
@@ -96,20 +80,10 @@ void normalize(char* s, IntArray* operands, IntArray* operators, int* size) {
 
 int* diffWaysToCompute2(IntArray* operands, IntArray* operators, int size,
   int pos, int* returnSize) {
-  // ====== DEBUG ======
-  printf("Operands: ");
-  int_array_print(operands, size + 1);
-  printf("Operators: ");
-  char_array_print(operators, size);
-  printf("size=%d, pos=%d\n", size, pos);
-  // ======  END  ======
   int count = 0;
   IntArray result = int_array();
   if (size == 0) {
     /* single operator */
-    // ====== DEBUG ======
-    printf("Single Operator: %d\n", operands->array[0]);
-    // ======  END  ======
     int_array_set(&result, count++, operands->array[0]);
   } else {
     /* recursion, add parenthese at each operator position */
@@ -129,15 +103,9 @@ int* diffWaysToCompute2(IntArray* operands, IntArray* operators, int size,
       IntArray new_operators = int_array_rm(operators, size, i);
       int_array_set(&new_operands, i, value);
       int sub_size;
-      // ====== DEBUG ======
-      printf("Recursive: round=%d, %d %c %d = %d\n", i, lv, op, rv, value);
-      // ======  END  ======
       int* sub = diffWaysToCompute2(&new_operands, &new_operators, size - 1,
         i == 0 ? 0 : i - 1, &sub_size);
       for (int j = 0; j < sub_size; ++j) {
-        // ====== DEBUG ======
-        printf("Got: %d\n", sub[j]);
-        // ======  END  ======
         int_array_set(&result, count++, sub[j]);
       }
       free(sub);
@@ -153,12 +121,6 @@ int* diffWaysToCompute(char* input, int* returnSize) {
   int count = 0;
   /* normalize the string into operands and operators */
   normalize(input, &operands, &operators, &count);
-  // ====== DEBUG ======
-  printf("Operands: ");
-  int_array_print(&operands, count + 1);
-  printf("Operators: ");
-  int_array_print(&operators, count);
-  // ======  END  ======
   /* use the normalized data to compute */
   int* result = diffWaysToCompute2(&operands, &operators, count, 0, returnSize);
   int_array_free(&operands);

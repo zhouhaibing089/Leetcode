@@ -61,6 +61,40 @@ void ptr_array_set(PtrArray* array_ptr, int index, void* value) {
   array_ptr->array[index] = value;
 }
 
+/* remove value at index */
+IntArray int_array_rm(IntArray* array_ptr, int length, int index) {
+  IntArray array = int_array();
+  for (int i = 0; i < length; ++i) {
+    if (i < index) {
+      int_array_set(&array, i, array_ptr->array[i]);
+    }
+    if (i == index) {
+      continue;
+    }
+    if (i > index) {
+      int_array_set(&array, i - 1, array_ptr->array[i]);
+    }
+  }
+  return array;
+}
+
+/* remove value at index */
+PtrArray ptr_array_rm(PtrArray* array_ptr, int length, int index) {
+  PtrArray array = ptr_array();
+  for (int i = 0; i < length; ++i) {
+    if (i < index) {
+      ptr_array_set(&array, i, array_ptr->array[i]);
+    }
+    if (i == index) {
+      continue;
+    }
+    if (i > index) {
+      ptr_array_set(&array, i - 1, array_ptr->array[i]);
+    }
+  }
+  return array;
+}
+
 /* free the allocated memory */
 void int_array_free(IntArray* array_ptr) {
   free(array_ptr->array);
