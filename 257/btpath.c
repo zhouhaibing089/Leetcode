@@ -4,71 +4,71 @@
 #include <stdbool.h>
 
 typedef struct node {
-    struct node*    prev;
-    struct node*    next;
-    char*           value;
+  struct node*    prev;
+  struct node*    next;
+  char*           value;
 } node;
 
 typedef struct meta {
-    node*   head;
-    node*   last;
+  node*   head;
+  node*   last;
 } meta;
 
 typedef meta* list;
 
 // create list
 list create_list() {
-    list l = (meta*)malloc(sizeof(meta));
-    l->head = NULL;
-    l->last = NULL;
-    return l;
+  list l = (meta*)malloc(sizeof(meta));
+  l->head = NULL;
+  l->last = NULL;
+  return l;
 }
 
 // free it
 void free_list(list l) {
-    node* n = l->head;
-    while(n != NULL) {
-        node* next = n->next;
-        free(n);
-        n = next;
-    }
-    free(l);
+  node* n = l->head;
+  while(n != NULL) {
+    node* next = n->next;
+    free(n);
+    n = next;
+  }
+  free(l);
 }
 
 // add element
 void append(list l, char* value) {
-    node* n = (node*)malloc(sizeof(node));
-    n->value = value;
-    n->next = NULL;
-    if (l->last == NULL) {
-        n->prev = NULL;
-        l->last = n;
-        l->head = n;
-    } else {
-        n->prev = l->last;
-        l->last->next = n;
-        l->last = n;
-    }
+  node* n = (node*)malloc(sizeof(node));
+  n->value = value;
+  n->next = NULL;
+  if (l->last == NULL) {
+    n->prev = NULL;
+    l->last = n;
+    l->head = n;
+  } else {
+    n->prev = l->last;
+    l->last->next = n;
+    l->last = n;
+  }
 }
 
 void print_list(list l) {
-    node* n = l->head;
-    while(n != NULL) {
-        printf("%s ", n->value);
-        n = n->next;
-    }
-    printf("\n");
+  node* n = l->head;
+  while(n != NULL) {
+    printf("%s ", n->value);
+    n = n->next;
+  }
+  printf("\n");
 }
 
 char** convert(list l, int size) {
-    char** result = (char**)malloc(size * sizeof(char*));
-    int i = 0;
-    node* n = l->head;
-    while (n != NULL) {
-        result[i++] = n->value;
-        n = n->next;
-    }
-    return result;
+  char** result = (char**)malloc(size * sizeof(char*));
+  int i = 0;
+  node* n = l->head;
+  while (n != NULL) {
+    result[i++] = n->value;
+    n = n->next;
+  }
+  return result;
 }
 
 char* concat(char* l, char* r) {
