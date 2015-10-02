@@ -14,20 +14,17 @@ struct TreeNode* lowestCommonAncestor(struct TreeNode* root, struct TreeNode* p,
     max = min;
     min = tmp;
   }
-  int value = root->val;
-  while (value < min || value > max) {
+  while (root->val < min || root->val > max) {
     struct TreeNode* left = root->left;
     struct TreeNode* right = root->right;
     if (left == NULL || right == NULL) {
       break;
     }
-    if (value < min) {
+    if (root->val < min) {
       root = root->right;
-      value = root->val;
     }
-    if (value > max) {
+    if (root->val > max) {
       root = root->left;
-      value = root->val;
     }
   }
   return root;
