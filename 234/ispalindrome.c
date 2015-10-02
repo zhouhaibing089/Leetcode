@@ -61,7 +61,7 @@ struct ListNode {
 };
 
 bool isPalindrome2(int* array, int size) {
-  if (size == 1) {
+  if (size <= 1) {
     return true;
   }
   if (size == 2) {
