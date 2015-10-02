@@ -9,7 +9,6 @@ struct TreeNode* lowestCommonAncestor(struct TreeNode* root, struct TreeNode* p,
   if (root == NULL || p == root || q == root) {
     return root;
   }
-  // search left
   struct TreeNode* left = lowestCommonAncestor(root->left, p, q);
   struct TreeNode* right = lowestCommonAncestor(root->right, p, q);
   if (left == NULL) {
