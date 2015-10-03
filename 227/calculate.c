@@ -33,6 +33,7 @@ void int_slice_set(IntSlice* slice_ptr, int index, int value) {
   slice_ptr->slice[index] = value;
 }
 
+/* single operator computation */
 int compute(int lhs, int rhs, char op) {
   if (op == '+') {
     return lhs + rhs;
@@ -50,6 +51,7 @@ int compute(int lhs, int rhs, char op) {
 }
 
 int calculate(char* s) {
+  /* build the array of operators and operands */
   int n = 0;
   int i = 0;
   char c;
