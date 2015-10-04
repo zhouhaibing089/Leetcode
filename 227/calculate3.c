@@ -42,7 +42,7 @@ int calculate(char* s) {
         n = compute(args[p], n, ops[p]);
         --p;
       }
-      /* summary above */
+      /* reduce above */
       if (c == '+' || c == '-') {
         args[p] = compute(args[p], n, ops[p]);
         ops[p] = c;
@@ -55,18 +55,6 @@ int calculate(char* s) {
     } else {
       n = n * 10 + c - '0';
     }
-    // ====== DEBUG ======
-    // printf("Args: [");
-    // for (int j = 0; j <= p; ++j) {
-    //   printf("%d, ", args[j]);
-    // }
-    // printf("]\n");
-    // printf("Ops: [");
-    // for (int j = 0; j <= p; ++j) {
-    //   printf("%c, ", ops[j]);
-    // }
-    // printf("]\n");
-    // ======  END  =======
   }
   if (ops[p] == '*' || ops[p] == '/') {
     n = compute(args[p], n, ops[p]);
