@@ -48,5 +48,5 @@ int countNodes2(struct TreeNode* root, int ll, int rl) {
 }
 
 int countNodes(struct TreeNode* root) {
-return countNodes2(root, -1, -1);
+  return countNodes2(root, -1, -1);
 }
