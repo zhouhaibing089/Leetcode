@@ -7,13 +7,6 @@
  * };
 */
 
-int left_level(struct TreeNode* root) {
-  if (root == NULL) {
-    return 0;
-  }
-  return 1 + left_level(root->left);
-}
-
 bool is_null(struct TreeNode* root, int val, int level) {
   int mask = 1 << (level - 2);
   for (int i = 0; i < (level - 1); ++i) {
@@ -28,7 +21,12 @@ bool is_null(struct TreeNode* root, int val, int level) {
 }
 
 int countNodes(struct TreeNode* root) {
-  int level = left_level(root);
+  struct TreeNode* p = root;
+  int level = 0;
+  while (p != NULL) {
+    p = p->left;
+    ++level;
+  }
   if (level == 0) {
     return 0;
   }
