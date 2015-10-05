@@ -151,6 +151,8 @@ void table_free(table* t) {
       free(c);
     }
   }
+  free(t->buckets);
+  free(t);
 }
 
 bool containsNearbyDuplicate(int* nums, int numsSize, int k) {
@@ -183,7 +185,6 @@ int main() {
   table_insert(t, 1);
   table_remove(t, 0);
   table_insert(t, 1);
-  table_
   printf("find()=%d\n", table_find(t, 12));
   table_insert(t, 12);
   table_remove(t, 12);
