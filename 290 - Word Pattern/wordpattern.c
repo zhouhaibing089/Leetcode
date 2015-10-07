@@ -32,12 +32,14 @@ bool wordPattern(char* pattern, char* str) {
     }
     if (c == ' ') {
       if (index >= pl) {
+        free(tbl);
         return false;
       }
       tbl[index++] = i;
     }
   }
   if (index != pl) {
+    free(tbl);
     return false;
   }
   tbl[pl] = i;
@@ -61,6 +63,7 @@ bool wordPattern(char* pattern, char* str) {
     } else {
       /* compare str[i] and str[dict[pc - 'a']] */
       if (!compare(str, tbl[i], tbl[i + 1] - 1, tbl[dict[pc - 'a']], tbl[dict[pc - 'a'] + 1] - 1)) {
+        free(tbl);
         return false;
       }
     }
@@ -75,10 +78,12 @@ bool wordPattern(char* pattern, char* str) {
         continue;
       }
       if (compare(str, tbl[dict[i]], tbl[dict[i] + 1] - 1, tbl[dict[j]], tbl[dict[j] + 1] - 1)) {
+        free(tbl);
         return false;
       }
     }
   }
+  free(tbl);
   return true;
 }
 
