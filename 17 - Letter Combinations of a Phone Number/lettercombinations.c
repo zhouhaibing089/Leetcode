@@ -4,18 +4,11 @@
 
 char** letterCombinations(char* digits, int* returnSize) {
   char* dict[10] = {
-    NULL,
-    NULL,
-    "abc",
-    "def",
-    "ghi",
-    "jkl",
-    "mno",
-    "pqrs",
-    "tuv",
-    "wxyz"
+    NULL, NULL, "abc", "def", "ghi",
+    "jkl", "mno", "pqrs", "tuv", "wxyz"
   };
   int length = strlen(digits);
+  /* empty input */
   if (length == 0) {
     *returnSize = 0;
     return NULL;
@@ -23,6 +16,7 @@ char** letterCombinations(char* digits, int* returnSize) {
   int count = 1;
   for (int i = 0; i < length; ++i) {
     int n = digits[i] - '0';
+    /* consider 0 and 1 as illegal input */
     if (n == 0 || n == 1) {
       count = 0;
       break;
@@ -33,7 +27,9 @@ char** letterCombinations(char* digits, int* returnSize) {
   if (count == 0) {
     return NULL;
   }
+  /* memory allocate */
   char** r = (char**)malloc(sizeof(char*) * count);
+  /* each string is exactly length characters */
   for (int i = 0; i < count; ++i) {
     r[i] = (char*)malloc(sizeof(char) * (length + 1));
     r[i][length] = 0;
