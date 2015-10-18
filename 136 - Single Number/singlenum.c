@@ -3,5 +3,5 @@ int singleNumber(int* nums, int numsSize) {
   for (int i = 0; i < numsSize; ++i) {
     x ^= nums[i];
   }
-  return i;
+  return x;
 }
