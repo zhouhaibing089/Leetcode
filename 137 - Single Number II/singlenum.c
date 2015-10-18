@@ -8,7 +8,7 @@ int singleNumber(int* nums, int numsSize) {
     int c = nums[i];
     int ta = (~a & b & c) | (a & ~b & ~c);
     b = (~a & ~b & c) | (~a & b & ~c);
-    a=ta;
+    a = ta;
   }
   return a | b;
 }
