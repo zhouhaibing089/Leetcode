@@ -9,58 +9,59 @@ func main() {
 }
 
 // generateParenthesis generates all the well-formed parentheses combinations.
-// n = 1: () push -> pop
-// n = 2: ()() (()) push -> pop -> push -> pop push -> push -> pop -> pop
-// n = 3: ()()() (()()) ()(()) ((())) (())()
 func generateParenthesis(n int) []string {
 	var results []string             // results
 	var b []byte = make([]byte, n*2) // string builder
-	var p int                        // number of open parentheses
-	var c int                        // count of left parentheses
 
-	// choices marks the locations where we have alternative choices
-	var choices []int = make([]int, n)
-	var indexes []int = make([]int, n)
-	var ci int // index in choices
-	for i := 0; i < n; i++ {
-		choices[i] = -1
-	}
+	var open int  // number of open left parentheses
+	var count int // number of total left parentheses
+	var stack [][2]int = make([][2]int, n)
+	var p int = -1
 
 	for {
-		if c < n {
-			if p > 0 {
-				choices[ci] = (c-p)*2 + p
-				indexes[ci] = c
-				ci++
+		// closed = count -open
+		// position = closed * 2 + open
+		position := (count-open)*2 + open
+		// we can still push `(`, then do it.
+		if count < n {
+			// we can close if there is open parentheses, push the
+			// state into stack and we'll come back.
+			if open > 0 {
+				p++
+				stack[p] = [2]int{count, open}
 			}
-			p++
-			c++
-			b[(c-p)*2+p-1] = '('
+			b[position] = '('
+			// since we added left parentheses, the number of open/total
+			// parentheses are both increased by one.
+			open++
+			count++
 			continue
 		}
-		b[(c-p)*2+p] = ')'
-		p--
-		if p > 0 {
+		// all the left parentheses are used up, we need to close them
+		// all now.
+		b[position] = ')'
+		open--
+		if open > 0 {
 			continue
 		}
+		// now open is 0 and count is n, so we have a result.
 		results = append(results, string(b))
 
-		// look at choices
-		for i := n - 1; i >= 0; i-- {
-			if choices[i] != -1 {
-				ci = i
-				break
-			}
-		}
-		if choices[0] == -1 {
+		// if there is no history state which we can change, it means we
+		// have done all the work.
+		if p < 0 {
 			break
 		}
 
+		// pop up a history state, and change it to right parenthese, aka
+		// decrease the open number.
+		count, open = stack[p][0], stack[p][1]
+		position = (count-open)*2 + open
 		// change to pop at location ci
-		b[choices[ci]] = ')'
-		c = indexes[ci]
-		p = 2*c - 1 - choices[ci]
-		choices[ci] = -1
+		b[position] = ')'
+		open--
+
+		p--
 	}
 
 	return results
