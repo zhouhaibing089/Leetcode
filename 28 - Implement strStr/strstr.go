@@ -56,16 +56,16 @@ func TableFor(pattern string) []int {
 		}
 
 		// define
-		//       p[0]=p[j-k]
-		//       p[1]=p[j-k+1]
+		//     p[j-k]=p[0]
+		//   p[j-k+1]=p[1]
 		//        ..    ..
-		//     p[k-1]=p[j-1]
+		//     p[j-1]=p[k-1]
 		// as
 		//       f(j)=k
 		// now:
-		//        p[k]=p[j] <==> f(j+1)=k+1
-		//   p[f(j-1)]=p[j] <==> f(j+1)=f(j-1)+1
-		//         ...      <==>     ...
+		//   p[j]=p[k]    <==> p[j]=p[f(j)]    <==> f(j+1)=f(j)+1
+		//   p[j]=p[f(k)] <==> p[j]=p[f(f(j))] <==> f(j+1)=f(f(j))+1
+		// and that can go forward until the index is no longer valid.
 		if pattern[table[i-1]] == pattern[i-1] {
 			table[i] = table[i-1] + 1
 		} else {
