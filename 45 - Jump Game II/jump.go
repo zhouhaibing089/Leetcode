@@ -37,3 +37,5 @@ func jump(nums []int) int {
 
 	return values[0]
 }
+
+// TODO: greedy algorithms.
